@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orientation Universitaire - Itasy</title>
+    <!-- Bootstrap 5 pour un design moderne et responsive -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Notre CSS personnalisé -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- EN-TÊTE AVEC IMAGE ET MESSAGE -->
+    <header class="hero-section text-center text-white d-flex align-items-center justify-content-center" 
+            style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ url_for('static', filename='images/toge.jpg') }}'); background-size: cover; background-position: center; height: 300px;">
+        <div>
+            <h1 class="display-4 fw-bold">Bonjour ! Bienvenue dans notre plateforme d'orientation des étudiants bacheliers</h1>
+            <p class="lead">Découvrez les formations qui vous correspondent à l’Université de l’Itasy</p>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <!-- FORMULAIRE GLOBAL – les données seront envoyées vers /resultats -->
+        <form id="orientationForm" action="{{ url_for('resultats') }}" method="POST">
+            
+            <!-- GRILLE DES 6 BOUTONS-CATÉGORIES (ACCORDÉONS) -->
+            <div class="row g-4">
+                
+                <!-- 1. RELEVÉ DE NOTES -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card category-card h-100">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" 
+                             data-bs-toggle="collapse" data-bs-target="#collapseNotes" aria-expanded="false">
+                            <span><i class="fas fa-graduation-cap me-2"></i>Relevé de notes du Baccalauréat</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div id="collapseNotes" class="collapse">
+                            <div class="card-body">
+                                <!-- Type de Bac -->
+                                <label class="form-label fw-bold">Type de Bac</label>
+                                <div class="btn-group w-100 mb-3" role="group">
+                                    <input type="radio" class="btn-check" name="bac_type" id="bacGeneral" value="Bac Général" autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="bacGeneral">Bac Général</label>
+                                    <input type="radio" class="btn-check" name="bac_type" id="bacTechnique" value="Bac Technique" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="bacTechnique">Bac Technique</label>
+                                </div>
+
+                                <!-- Série Général (caché si Bac Technique sélectionné) -->
+                                <div id="seriesGenerales" class="mb-3">
+                                    <label class="form-label fw-bold">Série (Général)</label>
+                                    <select name="serie" class="form-select">
+                                        <option value="L">L</option>
+                                        <option value="S">S</option>
+                                        <option value="OSE">OSE</option>
+                                        <option value="A1">A1</option>
+                                        <option value="A2">A2</option>
+                                        <option value="C">C</option>
+                                    </select>
+                                </div>
+
+                                <!-- Série Technique (caché par défaut) -->
+                                <div id="seriesTechniques" class="mb-3" style="display: none;">
+                                    <label class="form-label fw-bold">Série (Technique)</label>
+                                    <select name="serie" class="form-select">
+                                        <option value="G1">G1 Gestion</option>
+                                        <option value="G2">G2 Gestion</option>
+                                        <option value="Techniques Industrielles">Techniques Industrielles</option>
+                                    </select>
+                                </div>
+
+                                <!-- Liste des matières (simplifiée) -->
+                                <div id="matieresContainer">
+                                    <!-- Sera peuplée par JavaScript en fonction de la série -->
+                                </div>
+
+                                <!-- Mention obtenue -->
+                                <label class="form-label fw-bold mt-3">Mention obtenue</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="mention" id="passable" value="Passable">
+                                        <label class="form-check-label" for="passable">Passable</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="mention" id="assezBien" value="Assez Bien">
+                                        <label class="form-check-label" for="assezBien">Assez Bien</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="mention" id="bien" value="Bien">
+                                        <label class="form-check-label" for="bien">Bien</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="mention" id="tresBien" value="Très Bien">
+                                        <label class="form-check-label" for="tresBien">Très Bien</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CENTRES D'INTÉRÊT -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card category-card h-100">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center" 
+                             data-bs-toggle="collapse" data-bs-target="#collapseInterets">
+                            <span><i class="fas fa-heart me-2"></i>Centres d'intérêt et Passions</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div id="collapseInterets" class="collapse">
+                            <div class="card-body">
+                                <p class="fw-bold">Domaines favoris</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <!-- Boutons de type radio / checkbox, selon choix -->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="domaine" value="Technologie">
+                                        <label class="form-check-label">Technologie</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="domaine" value="Art et Design">
+                                        <label class="form-check-label">Art et Design</label>
+                                    </div>
+                                    <!-- ... autres options ... -->
+                                </div>
+                                <p class="fw-bold">Activités extra-scolaires</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <!-- idem -->
+                                </div>
+                                <p class="fw-bold">Environnement de travail</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <!-- idem -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. TEST DE PERSONNALITÉ -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card category-card h-100">
+                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center" 
+                             data-bs-toggle="collapse" data-bs-target="#collapsePersonnalite">
+                            <span><i class="fas fa-user-check me-2"></i>Test de Personnalité</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div id="collapsePersonnalite" class="collapse">
+                            <div class="card-body">
+                                <!-- Structure identique à l'arborescence donnée -->
+                                <p class="fw-bold">Interaction sociale</p>
+                                <div class="btn-group w-100 mb-2">
+                                    <input type="radio" class="btn-check" name="interaction" id="introverti">
+                                    <label class="btn btn-outline-secondary" for="introverti">Introverti</label>
+                                    <input type="radio" class="btn-check" name="interaction" id="extraverti">
+                                    <label class="btn btn-outline-secondary" for="extraverti">Extraverti</label>
+                                </div>
+                                <!-- ... autres sous-catégories ... -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. PROJET PROFESSIONNEL -->
+                <div class="col-md-6 col-lg-4">
+                    <!-- ... construction similaire ... -->
+                </div>
+
+                <!-- 5. COMPÉTENCES TRANSVERSALES -->
+                <div class="col-md-6 col-lg-4">
+                    <!-- ... -->
+                </div>
+
+                <!-- 6. CONTRAINTES ET BUDGET -->
+                <div class="col-md-6 col-lg-4">
+                    <!-- ... -->
+                </div>
+            </div>
+
+            <!-- BOUTON FIXE EN BAS : PASSER À L'ORIENTATION -->
+            <div class="fixed-bottom bg-light p-3 border-top text-center">
+                <button type="submit" class="btn btn-lg btn-warning fw-bold px-5">
+                    <i class="fas fa-arrow-right me-2"></i>Passer à l'orientation
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS (pour les accordéons) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Notre script personnalisé -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

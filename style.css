@@ -1,0 +1,54 @@
+/* Style général */
+body {
+    background-color: #f8f9fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 100px; /* pour le bouton fixed-bottom */
+}
+
+.hero-section {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.category-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-card .card-header {
+    border-radius: 15px 15px 0 0 !important;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 1rem;
+}
+
+.category-card .card-body {
+    background-color: white;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Boutons radio / checkbox personnalisés */
+.btn-check:checked + .btn-outline-primary {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Champs de note / coefficient */
+.input-coeff, .input-note {
+    width: 80px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.matieres-ligne {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
